@@ -28,7 +28,6 @@ export default class App extends Component {
 
         <h1>Jordan Hudgens Portfolio</h1>
         <div>{moment().format("MMMM Do YYYY, h:mm:ss a")}</div>
-        <PortfolioContainer />
       </div>
     );
   }
