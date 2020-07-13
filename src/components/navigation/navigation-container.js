@@ -10,6 +10,8 @@ export default class NavigationComponent extends Component {
         return <div>
             <NavLink exact to="/">Home</NavLink>
             <NavLink exact to="/about-me">About</NavLink>
+            <NavLink exact to="/contact">Contact</NavLink>
+            <NavLink exact to="/blog">Blog</NavLink>
             </div>
     }
 }
