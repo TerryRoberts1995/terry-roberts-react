@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import PortfolioItem from "./portfolio-item";
+import axios from 'axios';
+
 
 export default class PortfolioContainer extends Component {
     
@@ -10,7 +12,7 @@ export default class PortfolioContainer extends Component {
         this.state = {
             pageTitle: "Welcome to my Portfolio",
             isLoading: false,
-            data: [{title: "Russell", category: "Savage", slug: 'russell'},{title: "Austin",category:"Awesome", slug: 'austin'},{title: "Michael", category: "Gnarly", slug: 'michael' }, {title: "Sam", category: "wicked", slug: 'sam'}]
+            data: []
         }
 
        this.handleFilter = this.handleFilter.bind(this);
@@ -23,12 +25,31 @@ export default class PortfolioContainer extends Component {
             }) 
         })
     }
+
+    getPortfolioItems() {
+        axios.get("https://toasty.devcamp.space/portfolio/portfolio_items")
+        .then(response => {
+          this.setState({
+            data: response.data.portfolio_items
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
     portfolioItems() {
 
         return this.state.data.map(item => {
-            return <PortfolioItem title = {item.title} url = {'google.com'} slug = {item.slug}/>;
+            console.log(item)
+            return <PortfolioItem title = {item.name} url = {item.url} slug = {item.id}/>;
         });
     }
+
+    componentDidMount() {
+        this.getPortfolioItems();
+    }
+
 
     handlePageTitleUpdate() {
         this.setState({
@@ -37,6 +58,7 @@ export default class PortfolioContainer extends Component {
     }
 
     render() {
+
         if(this.state.isLoading) {
             return <div>Loading...</div>
         }
