@@ -4,3 +4,8 @@ body {
     margin: 0;
     font-family: 'Heebo', sans-serif;
 }
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    
+}

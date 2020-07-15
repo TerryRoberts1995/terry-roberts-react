@@ -27,7 +27,7 @@ export default class PortfolioContainer extends Component {
     }
 
     getPortfolioItems() {
-        axios.get("https://toasty.devcamp.space/portfolio/portfolio_items")
+        axios.get("https://semperry.devcamp.space/portfolio/portfolio_items")
         .then(response => {
           this.setState({
             data: response.data.portfolio_items
@@ -77,8 +77,7 @@ export default class PortfolioContainer extends Component {
                 <button onClick= {() => this.handleFilter('Awesome')}>Awesome</button>                
                 <button onClick= {() => this.handleFilter('Wicked')}>Wicked</button>                
                 <button onClick= {() => this.handleFilter('Gnarly')}>Gnarly</button>                
-                
-                {this.portfolioItems()}
+                <div className ="portfolio-items-wrapper">{this.portfolioItems()}</div>
 
             </div>
         );
