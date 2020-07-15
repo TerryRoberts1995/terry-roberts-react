@@ -9,13 +9,13 @@ export default class NavigationComponent extends Component {
     render() {
         return <div className="nav-wrapper">
             <div className= "left-side">
-                <NavLink exact to="/">Home</NavLink>
-                <NavLink exact to="/about-me">About</NavLink>
-                <NavLink exact to="/contact">Contact</NavLink>
-                <NavLink exact to="/blog">Blog</NavLink>
+                <div className ="nav-link-wrapper"><NavLink exact to="/">Home</NavLink></div>
+                <div className ="nav-link-wrapper"><NavLink exact to="/about-me">About</NavLink></div>
+                <div className ="nav-link-wrapper"><NavLink exact to="/contact">Contact</NavLink></div>
+                <div className ="nav-link-wrapper"><NavLink exact to="/blog">Blog</NavLink></div>
             </div>
             <div className = "right-side">
-                
+
             </div>
             </div>
     }
