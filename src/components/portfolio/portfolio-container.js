@@ -4,52 +4,47 @@ import axios from 'axios';
 
 
 export default class PortfolioContainer extends Component {
-    
+
     constructor() {
         super();
-        
+
 
         this.state = {
-            pageTitle: "Welcome to my Portfolio",
             isLoading: false,
             data: []
         }
 
-       this.handleFilter = this.handleFilter.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
     }
-    
+
     handleFilter(filter) {
         this.setState({
             data: this.state.data.filter(item => {
                 return item.category === filter;
-            }) 
+            })
         })
     }
 
     getPortfolioItems() {
-        axios.get("https://semperry.devcamp.space/portfolio/portfolio_items")
-        .then(response => {
-          this.setState({
-            data: response.data.portfolio_items
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        axios.get("https://toasty.devcamp.space/portfolio/portfolio_items")
+            .then(response => {
+                console.log(response.data)
+                this.setState({
+                    data: response.data.portfolio_items
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     portfolioItems() {
-        // Data that we'll need:
-        // - background-image: thumb_image_url
-        // - logo 
-        // -description: description
-        // id : id
 
         return this.state.data.map(item => {
             return (
-            <PortfolioItem 
-            key = {item.id} 
-            item = {item}/>);
+                <PortfolioItem
+                    key={item.id}
+                    item={item} />);
         });
     }
 
@@ -57,7 +52,7 @@ export default class PortfolioContainer extends Component {
         this.getPortfolioItems();
     }
 
-    
+
     handlePageTitleUpdate() {
         this.setState({
             pageTitle: 'Here is some information.'
@@ -66,19 +61,15 @@ export default class PortfolioContainer extends Component {
 
     render() {
 
-        if(this.state.isLoading) {
+        if (this.state.isLoading) {
             return <div>Loading...</div>
         }
         return (
-            <div>
-                <h2>{this.state.pageTitle}</h2>
-                
-                <button onClick= {() => this.handleFilter('Savage')}>Savage</button>                
-                <button onClick= {() => this.handleFilter('Awesome')}>Awesome</button>                
-                <button onClick= {() => this.handleFilter('Wicked')}>Wicked</button>                
-                <button onClick= {() => this.handleFilter('Gnarly')}>Gnarly</button>                
-                <div className ="portfolio-items-wrapper">{this.portfolioItems()}</div>
-
+            <div className="portfolio-items-wrapper">
+                <button className="btn" onClick={() => this.handleFilter('Savage')}>Savage</button>
+                <button className="btn" onClick={() => this.handleFilter('Awesome')}>Awesome</button>
+                <button className="btn" onClick={() => this.handleFilter('Wicked')}>Wicked</button>
+                {this.portfolioItems()}
             </div>
         );
     }
