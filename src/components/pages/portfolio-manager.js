@@ -17,14 +17,16 @@ export default class PortfolioManager extends Component {
     }
 
     handleSuccessfulFormSubmission(portfolioItem) {
-
+        this.setState({
+            portfolioItems: [portfolioItem].concat(this.state.portfolioItems)
+        })
     }
 
     handleformSubmissionError(error) {
         console.log(error)
     }
     getPortfolioItems = () => {
-        axios.get("https://toasty.devcamp.space/portfolio/portfolio_items", { withCredentials: true })
+        axios.get("https://toasty.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc", { withCredentials: true })
             .then(res => {
                 this.setState({
                     portfolioItems: [...res.data.portfolio_items]
@@ -43,7 +45,7 @@ export default class PortfolioManager extends Component {
         return (
             <div className="portfolio-manager-wrapper">
                 <div className="left-column">
-                    <PortfolioForm />
+                    <PortfolioForm handleSuccessfulFormSubmission={this.handleSuccessfulFormSubmission} />
                 </div>
 
                 <div className="right-column">
