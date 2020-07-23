@@ -17,6 +17,7 @@
         background-color: $dark-teal;
     }
 }
+
 @mixin input-element {
     input {
         font-family: "Titillium Web", sans-serif;
@@ -37,4 +38,10 @@
             border-bottom: 1px solid $dark-teal;
         }
     }
+}
+
+@mixin base-grid() {
+    display: grid;
+    grid-template-columns: 200px 200px 200px;
+    grid-gap: 21px;
 }
