@@ -9,12 +9,28 @@ export default class PortfolioManager extends Component {
         super()
 
         this.state = {
-            portfolioItems: []
+            portfolioItems: [],
+            portfolioToEdit: {}
         }
 
-        this.handleSuccessfulFormSubmission = this.handleSuccessfulFormSubmission.bind(this)
+        this.handleNewFormSubmission = this.handleNewFormSubmission.bind(this)
+        this.handleEditFormSubmission = this.handleEditFormSubmission.bind(this)
         this.handleformSubmissionError = this.handleformSubmissionError.bind(this)
         this.handleDeleteClick = this.handleDeleteClick.bind(this)
+        this.handleEditClick = this.handleEditClick.bind(this)
+        this.clearPortfolioToEdit = this.clearPortfolioToEdit.bind(this)
+    }
+
+    clearPortfolioToEdit() {
+        this.setState({
+            portfolioToEdit: {}
+        });
+    }
+
+    handleEditClick(portfolioItem) {
+        this.setState({
+            portfolioToEdit: portfolioItem
+        })
     }
 
     handleDeleteClick(portfolioItem) {
@@ -32,7 +48,12 @@ export default class PortfolioManager extends Component {
                 console.log("This is the error ", err)
             })
     }
-    handleSuccessfulFormSubmission(portfolioItem) {
+
+    handleEditFormSubmission() {
+        this.getPortfolioItems();
+    }
+
+    handleNewFormSubmission(portfolioItem) {
         this.setState({
             portfolioItems: [portfolioItem].concat(this.state.portfolioItems)
         })
@@ -61,13 +82,20 @@ export default class PortfolioManager extends Component {
         return (
             <div className="portfolio-manager-wrapper">
                 <div className="left-column">
-                    <PortfolioForm handleSuccessfulFormSubmission={this.handleSuccessfulFormSubmission} />
+                    <PortfolioForm
+                        handleNewFormSubmission={this.handleNewFormSubmission}
+                        handleEditFormSubmission={this.handleEditFormSubmission}
+                        handleformSubmissionError={this.handleformSubmissionError}
+                        clearPortfolioToEdit={this.clearPortfolioToEdit}
+                        portfolioToEdit={this.state.portfolioToEdit}
+                    />
                 </div>
 
                 <div className="right-column">
                     <PortfolioSidebarList
                         handleDeleteClick={this.handleDeleteClick}
                         data={this.state.portfolioItems}
+                        handleEditClick={this.handleEditClick}
                     />
                 </div>
             </div>
