@@ -1,10 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom"
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import axios from 'axios';
+import BlogItem from "../blog/blog-item"
 
-export default function () {
-  return (
-    <div>
-      <h2>Blog</h2>
-      <Link to="/about-me"> Read more about me.</Link>
-    </div>);
+export default class Blog extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      blogItems: []
+    }
+
+    this.getBlogItems = this.getBlogItems.bind(this);
+  }
+
+  getBlogItems() {
+    axios.get("https://toasty.devcamp.space/portfolio/portfolio_blogs", { withCredentials: true })
+      .then(res => {
+        this.setState({
+          blogItems: res.data.portfolio_blogs
+        })
+      })
+      .catch(err => {
+        console.log('Error, from getBlogItems', err);
+      })
+  }
+
+  componentWillMount() {
+    this.getBlogItems();
+  }
+
+  render() {
+    const blogRecords = this.state.blogItems.map(blogItem => {
+      return <BlogItem key={blogItem.id} blogItem={blogItem} />;
+    })
+
+    return (
+      <div>
+        {blogRecords}
+      </div >
+    );
+  }
 }
