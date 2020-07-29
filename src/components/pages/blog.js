@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from 'axios';
 import BlogItem from "../blog/blog-item"
+import BlogModal from '../modals/blog-modal'
 
 export default class Blog extends Component {
   constructor() {
@@ -12,14 +13,35 @@ export default class Blog extends Component {
       blogItems: [],
       totalCount: 0,
       currentPage: 0,
-      isLoading: true
-    }
+      isLoading: true,
+      blogModalIsOpen: false
+    };
 
     this.getBlogItems = this.getBlogItems.bind(this);
     this.onScroll = this.onScroll.bind(this);
-    window.addEventListener("scroll", this.onScroll, false)
+    window.addEventListener("scroll", this.onScroll, false);
+    this.handleNewBlogClick = this.handleNewBlogClick.bind(this);
+    this.handleModalClose = this.handleModalClose.bind(this);
+    this.handleSuccessfullNewBlogSubmission = this.handleSuccessfullNewBlogSubmission.bind(this);
+  }
+  handleSuccessfullNewBlogSubmission(blog) {
+    this.setState({
+      blogModalIsOpen: false,
+      blogItems: [blog].concat(this.state.blogItems)
+    })
   }
 
+  handleModalClose() {
+    this.setState({
+      blogModalIsOpen: false
+    })
+  }
+
+  handleNewBlogClick() {
+    this.setState({
+      blogModalIsOpen: true
+    })
+  }
 
   onScroll() {
 
@@ -50,21 +72,32 @@ export default class Blog extends Component {
       })
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getBlogItems();
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.onScroll, false)
   }
+
   render() {
     const blogRecords = this.state.blogItems.map(blogItem => {
       return <BlogItem key={blogItem.id} blogItem={blogItem} />;
     });
 
-
     return (
       <div className="blog-container">
+        <BlogModal
+          handleModalClose={this.handleModalClose}
+          modalIsOpen={this.state.blogModalIsOpen}
+          handleSuccessfullNewBlogSubmission={this.handleSuccessfullNewBlogSubmission}
+        />
+
+        <div className="new-blog-link">
+          <a onClick={this.handleNewBlogClick}>
+            Open Modal
+          </a>
+        </div>
 
         <div className="content-container">{blogRecords}</div>
 
