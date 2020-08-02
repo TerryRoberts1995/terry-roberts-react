@@ -12,18 +12,43 @@ export default class BlogForm extends Component {
             title: "",
             blog_status: "",
             content: "",
-            featured_image: ""
+            featured_image: "",
+            id: "",
+            apiUrl: "https://toasty.devcamp.space/portfolio/portfolio_blogs",
+            apiAction: "post"
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRichTextEditorChange = this.handleRichTextEditorChange.bind(this);
-
         this.componentConfig = this.componentConfig.bind(this);
         this.djsConfig = this.djsConfig.bind(this);
-        this.handleFeaturedImageDrop = this.handleFeaturedImageDrop.bind(this)
-
+        this.handleFeaturedImageDrop = this.handleFeaturedImageDrop.bind(this);
         this.featuredImageRef = React.createRef();
+        this.deleteImage = this.deleteImage.bind(this);
+    }
+
+    deleteImage(imageType) {
+        axios.delete(`https://api.devcamp.space/portfolio/delete-portfolio-blog-image/${this.props.blog.id}?image_type=${imageType}`, { withCredentials: true })
+            .then(res => {
+                this.props.handleFeaturedImageDelete();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    componentWillMount() {
+        if (this.props.editMode) {
+            this.setState({
+                id: this.props.blog.id,
+                title: this.props.blog.title,
+                blog_status: this.props.blog.blog_status,
+                content: this.props.blog.content,
+                apiUrl: `https://toasty.devcamp.space/portfolio/portfolio_blogs/${this.props.blog.id}`,
+                apiAction: "patch"
+            })
+        }
     }
 
     componentConfig() {
@@ -68,7 +93,12 @@ export default class BlogForm extends Component {
     }
 
     handleSubmit(event) {
-        axios.post("https://toasty.devcamp.space/portfolio/portfolio_blogs", this.buildForm(), { withCredentials: true })
+        axios({
+            method: this.state.apiAction,
+            url: this.state.apiUrl,
+            data: this.buildForm(),
+            withCredentials: true
+        })
             .then(res => {
                 event.preventDefault()
 
@@ -83,7 +113,13 @@ export default class BlogForm extends Component {
                     featured_image: ""
                 })
 
-                this.props.handleSuccessfullFormSubmission(res.data.portfolio_blog)
+                if (this.props.editMode) {
+                    this.state.handleUpdateFormSubmission(
+                        res.data.portfolio_blog
+                    )
+                } else {
+                    this.props.handleSuccessfullFormSubmission(res.data.portfolio_blog)
+                }
             })
             .catch(error => console.log(error))
     }
@@ -96,7 +132,7 @@ export default class BlogForm extends Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit} className="blog-form-wrapper">
+            <form onSubmit={this.handleSubmit} className="blog-form-wrapper" >
                 <div className="two-column">
                     <input onChange={this.handleChange} type="text"
                         name="title"
@@ -113,18 +149,32 @@ export default class BlogForm extends Component {
                 <div className="one-column">
                     <RichTextEditor
                         handleRichTextEditorChange={this.handleRichTextEditorChange}
+                        editMode={this.props.editMode}
+                        contentToEdit={this.props.editMode && this.props.blog.content ? this.props.blog.content : null}
                     />
                 </div>
 
                 <div className="image-uploaders">
-                    <DropZoneComponent
-                        ref={this.featuredImage}
-                        config={this.componentConfig()}
-                        djsConfig={this.djsConfig()}
-                        eventHandlers={this.handleFeaturedImageDrop()}
-                    >
-                        <div className="dz-message">Featured Image</div>
-                    </DropZoneComponent>
+                    {this.props.editMode && this.props.blog.featured_image_url ? (
+
+                        <div className="portfolio-manager-image-wrapper">\
+                            <img src={this.props.blog.featured_image_url} />
+
+                            <div className="image-removal-link">
+                                <a onClick={() => this.deleteImage("featured Image")}>
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    ) : (
+                            <DropZoneComponent
+                                ref={this.featuredImage}
+                                config={this.componentConfig()}
+                                djsConfig={this.djsConfig()}
+                                eventHandlers={this.handleFeaturedImageDrop()}
+                            >
+                                <div className="dz-message">Featured Image</div>
+                            </DropZoneComponent>)}
                 </div>
 
                 <button className="btn">Save</button>

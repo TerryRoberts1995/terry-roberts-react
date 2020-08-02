@@ -43,7 +43,7 @@ export default class PortfolioForm extends Component {
             .then(res => {
                 this.setState({
                     [`${imageType}_url`]: ""
-                })
+                }) // Put in helper.js file //
             })
             .catch(err => console.log('error: ', err))
     }
